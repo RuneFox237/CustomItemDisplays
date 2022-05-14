@@ -1,0 +1,95 @@
+﻿<#@ template language="C#" linePragmas="false" #>
+<#@ import namespace="UnityEngine" #>
+<#@ import namespace="RoRSkinBuilder" #>
+<#@ import namespace="RuneFoxMods.TemplateHelpers" #>
+using RoR2;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using MonoMod.RuntimeDetour;
+using RuneFoxMods.CustomItemDisplays;
+
+
+//NameSpace and SkinName are generated from SkinDef Generator
+namespace <#= info.assetInfo.uccModName #>
+{
+  public partial class <#= info.assetInfo.uccModName #>Plugin 
+  { 
+    static CustomItemDisplayExtension _CustomItemDisplayExtension = new CustomItemDisplayExtension();
+    static CustomItemDisplayManager _CustomItemDisplayManager = new CustomItemDisplayManager();
+
+    public class CustomItemDisplayExtension
+    {
+      //////////////////////////////////////////////////////////////////////////////////////////
+      /// Extension functions
+      internal void BeforeStart()
+      {
+        _CustomItemDisplayManager.InstanceLogger = Instance.Logger;
+        new Hook(typeof(SkinDef).GetMethod(nameof(SkinDef.Apply)), (Action<Action<SkinDef, GameObject>, SkinDef, GameObject>)_CustomItemDisplayManager.SkinDefApply).Apply();
+      }
+
+      internal void AfterStart()
+      {
+        AddItemDisplays();
+      }
+
+      internal void BeforeBodyCatalogInit(){}
+
+      internal void AfterBodyCatalogInit(){}
+      ///
+      //////////////////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////////////////////
+      /// Local Declerations
+<# foreach(var skin in info.Skins) { #>
+      Dictionary<string, ItemDisplayRule[]> <#=skin.skinDef.name.ToUpperCamelCase() #>Displays = new Dictionary<string, ItemDisplayRule[]>();
+<# } #>
+      /// Local Declerations
+      //////////////////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////////////////////
+      /// Local funcitons
+      internal void AddItemDisplays()
+      {
+        AddDisplays();
+        AddDisplayRules();
+      }
+
+      void AddDisplays()
+      {
+<# foreach(var skin in info.Skins) { #>
+        _CustomItemDisplayManager.CustomDisplays.Add("<#=skin.skinDef.CreateNameToken(info.modInfo.author)#>", <#=skin.skinDef.name.ToUpperCamelCase() #>Displays);
+<# } #>
+      }
+
+      //Custom format for KEB's item display helper
+      //new ItemDisplayRule{childName={childName}, localPos = {localPos:4}, localAngles = {localAngles:4}, localScale = {localScale:4}}
+      void AddDisplayRules()
+      {
+<# foreach(var skin in info.Skins) { 
+        //////////////////////////////////////////////////////////////
+        // Base Items
+    foreach(var baseItem in skin.BaseItemDisplays){#>
+        <#=skin.skinDef.name.ToUpperCamelCase() #>Displays.Add("<#=baseItem.ItemName#>", new ItemDisplayRule[]
+        {<# for(int i = 0; i < baseItem.DisplayList.Count; i++){
+            var display = baseItem.DisplayList[i]; #>
+
+          new ItemDisplayRule {childName = "<#=display.childName#>", localPos = <#=Helpers.PrintVector3(display.localPos)#>, localAngles = <#=Helpers.PrintVector3(display.localAngle)#>, localScale = <#=Helpers.PrintVector3(display.localScale)#>}<#if(i < baseItem.DisplayList.Count-1){#>,<#}#>
+<#}#>
+
+        });
+<#}
+        // Base Items
+        //////////////////////////////////////////////////////////////
+
+        //////////////////////////////////////////////////////////////
+        // Modded Items
+
+        // Modded Items
+        //////////////////////////////////////////////////////////////
+
+}#>
+      }
+      /// Local funcitons
+      //////////////////////////////////////////////////////////////////////////////////////////
+    }
+  }
+}

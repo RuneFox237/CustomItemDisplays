@@ -1,0 +1,19 @@
+{
+    "name": "runefox237.customitemdisplays",
+    "references": [
+        "GUID:420d696f3c2739f4697e78d61fd43b2e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "RoR2-nstrip.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_EDITOR"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
