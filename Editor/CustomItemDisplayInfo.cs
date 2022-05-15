@@ -2,13 +2,20 @@
 using UnityEngine;
 using RoRSkinBuilder.Data;
 using System.Collections.Generic;
+using RuneFoxMods.RoRSkinBuilderExtension;
 
 namespace RuneFoxMods.CustomItemDisplays
 {
 
   [AddComponentMenu("RoR Skins/Custom Item Display")]
-  public class CustomItemDisplayInfo : MonoBehaviour
+  public class CustomItemDisplayInfo : ExtensionBase
   {
+    ////////////////////////////////////////////////
+    /// Inherited Override
+    private static readonly string _name = "CustomItemDisplay";
+    public override string Name { get { return _name; } }
+    ///
+    ////////////////////////////////////////////////
     public SkinModInfo modInfo;
     public AssetsInfo assetInfo;
 

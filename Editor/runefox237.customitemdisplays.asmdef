@@ -1,7 +1,8 @@
 {
     "name": "runefox237.customitemdisplays",
     "references": [
-        "GUID:420d696f3c2739f4697e78d61fd43b2e"
+        "GUID:420d696f3c2739f4697e78d61fd43b2e",
+        "GUID:b95240a7a70e9d443af96a4bc75dd4b0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
