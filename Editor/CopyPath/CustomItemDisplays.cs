@@ -49,6 +49,8 @@ namespace RuneFoxMods.CustomItemDisplays
             PopulateIDRS(characterModel, self, customIDRS);
           }
           characterModel.itemDisplayRuleSet = customIDRS;
+          DisableInventoryModels(characterModel); //SkinDefApply gets called after items are added to model so we need to clear the displays
+          characterModel.OnInventoryChanged();  //and then re-enable them
         }
       }
       catch (Exception e)
@@ -77,6 +79,17 @@ namespace RuneFoxMods.CustomItemDisplays
       }
 
       customIDRS.GenerateRuntimeValues();
+    }
+
+    internal void DisableInventoryModels(CharacterModel model)
+    {
+      ItemIndex itemIndex = (ItemIndex)0;
+      ItemIndex itemCount = (ItemIndex)ItemCatalog.itemCount;
+      while (itemIndex < itemCount)
+      {
+        model.DisableItemDisplay(itemIndex);
+        itemIndex++;
+      }
     }
 
     internal ItemDisplayRule[] ReplaceRules(ItemDisplayRule[] oldRules, ItemDisplayRule[] newRules)
